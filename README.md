@@ -1,2 +1,4 @@
-# breakeven-roas-calculator
-Breakeven ROAS calculator for ecommerce brands
+# Breakeven ROAS Calculator
+
+A lightweight profitability calculator built for eCommerce brands, media buyers,
+
