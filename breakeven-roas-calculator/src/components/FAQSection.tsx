@@ -16,8 +16,8 @@ export default function FAQSection() {
         viewport={{ once: true }}
       >
         <div className="text-center mb-12">
-          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-[0.2em] mb-4 block">Knowledge Base</span>
-          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Frequently Asked Questions</h2>
+          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-[0.2em] mb-4 block">{t('faq.subtitle')}</span>
+          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{t('faq.title')}</h2>
         </div>
         <Collapse
           accordion

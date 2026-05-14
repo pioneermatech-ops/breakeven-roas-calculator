@@ -2,5 +2,5 @@
   "name": "Breakeven ROAS Calculator",
   "description": "A lightweight eCommerce calculator for DTC brands to calculate Breakeven Point, ROAS, and ROGP.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

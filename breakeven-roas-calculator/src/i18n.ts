@@ -7,6 +7,19 @@ const resources = {
     translation: {
       title: 'Breakeven ROAS Calculator',
       description: 'Calculate your eCommerce profitability metrics instantly.',
+      summary: {
+        title: 'The Bottom Line',
+        operatorMode: 'Operator Mode',
+        bottomLine: {
+          idle: 'Enter your numbers above to see if your business is actually making money.',
+          printingMoney: "Honestly? You're killing it. Your margins are fat and your ad costs are low. You've basically got a money machine here. Don't overthink it, just scale.",
+          makingMoney: "You're making money, which is more than most can say. There's room to grow, but keep an eye on those rising ad costs.",
+          thinProfit: "You're making a profit, but it's paper-thin. You're basically working for your suppliers and shipping carriers right now. Fix the product cost or raise prices.",
+          breakevenStruggle: "You're dancing on the edge. One bad week of ad performance could wipe out your profit. It's a tightrope walk right now.",
+          underperforming: "You're slightly underwater. The product is likely fine, but your marketing efficiency or margins need a quick adjustment to hit daylight.",
+          bleeding: "Look, this isn't working yet. You're spending too much to get customers on a product that doesn't have enough margin. Stop scaling and fix the math first.",
+        }
+      },
       modules: {
         breakevenPoint: 'Breakeven Point',
         breakevenROAS: 'Breakeven ROAS',
@@ -42,6 +55,7 @@ const resources = {
         estMonthlyRevenue: 'Est. Monthly Revenue',
         totalGrossProfit: 'Total Gross Profit',
         netProfit: 'Net Profit (After Fixed)',
+        unit: 'Orders',
       },
       tooltips: {
         sellingPrice: 'The price at which you sell a single unit of your product.',
@@ -69,6 +83,72 @@ const resources = {
         contributionMargin: 'The percentage of each dollar that contributes to covering fixed costs and generating net profit.',
         rogp: 'Efficiency metric measuring how effectively ad spend converts into raw profit before fixed expenses.',
       },
+      faq: {
+        title: 'Frequently Asked Questions',
+        subtitle: 'Knowledge Base',
+      },
+      footer: {
+        description: 'Precise unit economics and profitability analysis for high-growth DTC brands.',
+        tagline: 'Built for Performance Marketers',
+      },
+      interpretation: {
+        title: 'Business Interpretation',
+        subtitle: 'What These Numbers Mean',
+        recommendation: 'Recommendation',
+        badges: {
+          healthy: 'Healthy',
+          moderate: 'Moderate',
+          risky: 'Risky',
+          aggressive: 'Aggressive',
+          efficient: 'Efficient',
+          strong: 'Strong',
+          weak: 'Weak',
+          average: 'Average',
+          thin: 'Thin Margin',
+        },
+        roas: {
+          healthy: {
+            summary: 'You have relatively healthy unit economics, giving your paid acquisition campaigns more room to scale efficiently.',
+            recommendation: 'You may have capacity to scale more aggressively while maintaining profitability.',
+          },
+          moderate: {
+            summary: 'Your breakeven ROAS is in a standard range. Profitability will depend heavily on creative testing and conversion rate optimization.',
+            recommendation: 'Focus on improving AOV and reducing churn to increase the lifetime value of each acquisition.',
+          },
+          risky: {
+            summary: 'Your breakeven ROAS is relatively high, which means your contribution margins are tight. Scaling paid ads profitably may become difficult.',
+            recommendation: 'Consider improving pricing, bundling, AOV, or reducing operational costs before scaling spend.',
+          }
+        },
+        rogp: {
+          strong: {
+            summary: 'Your return on gross profit is strong, indicating high efficiency in converting ad spend into real profit.',
+            recommendation: 'Look for opportunities to reinvest this profit into brand building or inventory expansion.',
+          },
+          moderate: {
+            summary: 'Your return on gross profit is healthy but has room for optimization.',
+            recommendation: 'Review your middle-of-funnel conversion tactics to squeeze more profit from existing traffic.',
+          },
+          weak: {
+            summary: 'Your return on gross profit is currently weak, which may indicate inefficient acquisition costs.',
+            recommendation: 'Review CAC efficiency, pricing strategy, and operational overhead immediately.',
+          }
+        },
+        margin: {
+          healthy: {
+            summary: 'High gross margins provide a strong buffer against rising ad costs and competitive pressure.',
+            recommendation: 'Maintain your premium positioning and invest in product R&D to stay ahead.',
+          },
+          average: {
+            summary: 'Your gross margins are within the industry average for DTC brands.',
+            recommendation: 'Monitor supply chain costs and fulfillment efficiency to prevent margin erosion.',
+          },
+          thin: {
+            summary: 'Your gross margins are thin, leaving little room for error in your marketing or operations.',
+            recommendation: 'Consider a price increase or renegotiating with suppliers to improve your baseline profitability.',
+          }
+        }
+      },
       seo: {
         metaTitle: 'Breakeven ROAS Calculator for Shopify & DTC Brands',
         metaDescription: 'Calculate your Breakeven ROAS, gross profit, and profitability instantly. Free calculator for Shopify stores, media buyers, and DTC brands.',
@@ -95,6 +175,19 @@ const resources = {
     translation: {
       title: '盈亏平衡 ROAS 计算器',
       description: '即时计算您的电子商务盈利指标。',
+      summary: {
+        title: '核心总结',
+        operatorMode: '操盘手模式',
+        bottomLine: {
+          idle: '在上方输入数据，看看你的生意是否真的在赚钱。',
+          printingMoney: '说实话？你现在太猛了。利润够厚，广告成本又低。你这简直就是个印钞机。别犹豫了，赶紧拉规模吧。',
+          makingMoney: '你在赚钱，这已经比大多数人强了。还有增长空间，但要留意近期不断上涨的广告成本。',
+          thinProfit: '虽然在赚钱，但利润薄得像张纸。你现在基本上是在给供应商和物流公司打工。得想办法压低产品成本或者涨价。',
+          breakevenStruggle: '你在盈亏线上跳舞。广告表现稍微差一个礼拜，利润就全打水漂了。现在的状态就像是在走钢丝。',
+          underperforming: '你现在稍微有点入不敷出。产品可能没问题，但营销效率或者毛利率得赶紧调一调，不然很难出头。',
+          bleeding: '听着，现在的路子走不通。给一个利润不够的产品砸了太多广告费。别再蒙头冲规模了，先停下来把账算清楚。',
+        }
+      },
       modules: {
         breakevenPoint: '盈亏平衡点',
         breakevenROAS: '盈亏平衡 ROAS',
@@ -130,6 +223,7 @@ const resources = {
         estMonthlyRevenue: '预估月收入',
         totalGrossProfit: '总毛利润',
         netProfit: '净利润 (扣除固定成本)',
+        unit: '单',
       },
       tooltips: {
         sellingPrice: '您销售单个产品的价格。',
@@ -157,6 +251,72 @@ const resources = {
         contributionMargin: '每一美元收入中用于支付固定成本并产生净利润的百分比。',
         rogp: '衡量广告支出在扣除固定费用前转化为原始利润的效率指标。',
       },
+      faq: {
+        title: '常见问题',
+        subtitle: '知识库',
+      },
+      footer: {
+        description: '为快速增长的 DTC 品牌提供精确的单位经济效益和盈利能力分析。',
+        tagline: '为效果营销人员打造',
+      },
+      interpretation: {
+        title: '业务解读',
+        subtitle: '这些数据意味着什么',
+        recommendation: '改进建议',
+        badges: {
+          healthy: '健康',
+          moderate: '适中',
+          risky: '高风险',
+          aggressive: '激进',
+          efficient: '高效',
+          strong: '强劲',
+          weak: '薄弱',
+          average: '平均水平',
+          thin: '低毛利',
+        },
+        roas: {
+          healthy: {
+            summary: '您的单位经济效益相对健康，这让您的营销活动有更大的空间在保持效率的同时进行规模化。',
+            recommendation: '您有能力在保持盈利的同时，更加激进地扩大投放规模。',
+          },
+          moderate: {
+            summary: '您的盈亏平衡 ROAS 处于标准范围。盈利能力将高度依赖于素材测试和转化率优化。',
+            recommendation: '重点关注提高客单价（AOV）和降低流失率，以通过单次获客获取更高的终身价值（LTV）。',
+          },
+          risky: {
+            summary: '您的盈亏平衡 ROAS 相对较高，这意味着您的边际利润非常薄。在这种情况下，规模化投放可能会变得非常困难。',
+            recommendation: '在扩大支出之前，考虑优化定价、产品组合、客单价或降低运营成本。',
+          }
+        },
+        rogp: {
+          strong: {
+            summary: '您的毛利回报率表现强劲，这表明您在将广告支出转化为实际利润方面效率极高。',
+            recommendation: '寻找机会将这些利润重新投入到品牌建设或库存扩张中。',
+          },
+          moderate: {
+            summary: '您的毛利回报率处于健康水平，但仍有优化空间。',
+            recommendation: '审查您的漏斗中部转化策略，从现有流量中榨取更多利润。',
+          },
+          weak: {
+            summary: '您目前的毛利回报率较弱，这可能表明获客成本效率低下。',
+            recommendation: '立即重新审查获客效率、定价策略和运营管理成本。',
+          }
+        },
+        margin: {
+          healthy: {
+            summary: '高毛利为您抵御广告成本上升和竞争压力提供了强大的缓冲。',
+            recommendation: '保持您的高端定位，并投资于产品研发以保持领先地位。',
+          },
+          average: {
+            summary: '您的毛利率处于 DTC 品牌的行业平均水平。',
+            recommendation: '监控供应链成本和履行效率，以防止利润分配进一步被侵蚀。',
+          },
+          thin: {
+            summary: '您的毛利率较低，这使得您的营销或运营几乎没有犯错的空间。',
+            recommendation: '考虑提价或与供应商重新谈判，以提高您的基础盈利能力。',
+          }
+        }
+      },
       seo: {
         metaTitle: '盈亏平衡 ROAS 计算器 - 适用于 Shopify 和 DTC 品牌',
         metaDescription: '立即计算您的盈亏平衡 ROAS、毛利润和盈利能力。适用于 Shopify 卖家、媒体买家和 DTC 品牌的免费计算器。',
@@ -177,7 +337,6 @@ const resources = {
           }
         ]
       }
-
     }
   }
 };

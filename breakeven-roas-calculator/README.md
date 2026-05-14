@@ -1,75 +1,20 @@
-# Breakeven ROAS Calculator
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-A lightweight profitability calculator for eCommerce brands, media buyers, and DTC operators.
+# Run and deploy your AI Studio app
 
-## Features
+This contains everything you need to run your app locally.
 
-* Breakeven ROAS Calculator
-* Breakeven Point Calculator
-* Return on Gross Profit (ROGP)
-* Real-time frontend calculations
-* English / Chinese support
-* Mobile responsive
-* SEO-friendly structure
+View your app in AI Studio: https://ai.studio/apps/766dc5fc-aad0-4b93-a85d-6e6fe18a1743
 
----
+## Run Locally
 
-## Tech Stack
+**Prerequisites:**  Node.js
 
-* React
-* Vite
-* Tailwind CSS
-* Ant Design
 
----
-
-## Local Development
-
-### Prerequisites
-
-* Node.js
-
-### Install Dependencies
-
-```bash
-npm install
-```
-
-### Run Development Server
-
-```bash
-npm run dev
-```
-
----
-
-## Build for Production
-
-```bash
-npm run build
-```
-
----
-
-## Deployment
-
-Recommended deployment platform:
-
-* Vercel
-
----
-
-## Project Structure
-
-```bash
-src/
-public/
-components/
-pages/
-```
-
----
-
-## License
-
-MIT
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`

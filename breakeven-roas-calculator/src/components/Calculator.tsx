@@ -3,39 +3,39 @@ import { useTranslation } from 'react-i18next';
 import { InputNumber, Select, Tooltip, Typography, Space } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { motion } from 'motion/react';
+import { getInterpretation, getBottomLine } from '../lib/interpretationRules';
+import InterpretationSection from './InterpretationSection';
 
 const { Text } = Typography;
 
 interface Inputs {
-  sellingPrice: number;
-  aov: number;
+  sellingPrice: number | null;
+  aov: number | null;
   currency: string;
-  cogs: number;
-  shipping: number;
-  transactionFees: number;
-  agencyFee: number;
-  packaging: number;
-  otherVariable: number;
-  fixedCosts: number;
-  adSpend: number;
-  targetMargin: number;
-  actualROAS: number;
+  cogs: number | null;
+  shipping: number | null;
+  transactionFees: number | null;
+  packaging: number | null;
+  otherVariable: number | null;
+  fixedCosts: number | null;
+  adSpend: number | null;
+  targetMargin: number | null;
+  actualROAS: number | null;
 }
 
 const INITIAL_INPUTS: Inputs = {
-  sellingPrice: 120,
-  aov: 145,
+  sellingPrice: null,
+  aov: null,
   currency: 'USD',
-  cogs: 35,
-  shipping: 12.5,
-  transactionFees: 4.35,
-  agencyFee: 0,
-  packaging: 2,
-  otherVariable: 0,
-  fixedCosts: 5000,
-  adSpend: 5000,
-  targetMargin: 20,
-  actualROAS: 3.45,
+  cogs: null,
+  shipping: null,
+  transactionFees: null,
+  packaging: null,
+  otherVariable: null,
+  fixedCosts: null,
+  adSpend: null,
+  targetMargin: null,
+  actualROAS: null,
 };
 
 export default function Calculator() {
@@ -43,15 +43,20 @@ export default function Calculator() {
   const [inputs, setInputs] = useState<Inputs>(INITIAL_INPUTS);
 
   const updateInput = (key: keyof Inputs, value: number | string | null) => {
-    if (value === null) return;
     setInputs((prev) => ({ ...prev, [key]: value }));
   };
 
   const results = useMemo(() => {
-    const { 
-      aov, cogs, shipping, transactionFees, 
-      packaging, otherVariable, fixedCosts, adSpend, actualROAS, sellingPrice 
-    } = inputs;
+    const sellingPrice = inputs.sellingPrice || 0;
+    const aov = inputs.aov || 0;
+    const cogs = inputs.cogs || 0;
+    const shipping = inputs.shipping || 0;
+    const transactionFees = inputs.transactionFees || 0;
+    const packaging = inputs.packaging || 0;
+    const otherVariable = inputs.otherVariable || 0;
+    const fixedCosts = inputs.fixedCosts || 0;
+    const adSpend = inputs.adSpend || 0;
+    const actualROAS = inputs.actualROAS || 0;
 
     const totalVariableCosts = cogs + shipping + transactionFees + packaging + otherVariable;
     const contributionMargin = sellingPrice - totalVariableCosts;
@@ -72,12 +77,14 @@ export default function Calculator() {
     const fixedCostsPercent = simulatedRevenue > 0 ? (fixedCosts / simulatedRevenue) * 100 : 0;
     const adSpendPercent = simulatedRevenue > 0 ? (adSpend / simulatedRevenue) * 100 : 0;
 
+    const isReady = inputs.aov !== null && inputs.sellingPrice !== null && inputs.cogs !== null;
+
     return {
       totalVariableCosts,
       contributionMargin,
       grossProfitPerOrder,
-      breakevenUnits: Math.ceil(breakevenUnits),
-      breakevenROAS,
+      breakevenUnits: isFinite(breakevenUnits) ? Math.ceil(breakevenUnits) : null,
+      breakevenROAS: isFinite(breakevenROAS) ? breakevenROAS : null,
       simulatedRevenue,
       totalGrossProfit,
       netProfit,
@@ -85,7 +92,10 @@ export default function Calculator() {
       rogp: rogp, // as multiplier
       netProfitPercent,
       fixedCostsPercent,
-      adSpendPercent
+      adSpendPercent,
+      isReady,
+      interpretations: getInterpretation(breakevenROAS, rogp, marginPercent),
+      bottomLine: getBottomLine(actualROAS, breakevenROAS, marginPercent)
     };
   }, [inputs]);
 
@@ -99,8 +109,14 @@ export default function Calculator() {
     }
   }, [inputs.currency]);
 
-  const formatCurrency = (val: number) => {
+  const formatCurrency = (val: number | null) => {
+    if (val === null || (val === 0 && !results.isReady)) return '-';
     return `${currencySymbol}${val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
+  const formatNumber = (val: number | null, precision: number = 2, suffix: string = '') => {
+    if (val === null || isNaN(val) || (val === 0 && !results.isReady)) return '-';
+    return `${val.toFixed(precision)}${suffix}`;
   };
 
   return (
@@ -138,6 +154,7 @@ export default function Calculator() {
                   value={inputs.sellingPrice}
                   onChange={(v) => updateInput('sellingPrice', v)}
                   prefix={currencySymbol}
+                  placeholder="00"
                 />
               </div>
               <div className="bg-white border border-slate-200 rounded-xl p-3 shadow-xs transition-all">
@@ -153,6 +170,7 @@ export default function Calculator() {
                   value={inputs.aov}
                   onChange={(v) => updateInput('aov', v)}
                   prefix={currencySymbol}
+                  placeholder="00"
                 />
               </div>
             </div>
@@ -164,8 +182,9 @@ export default function Calculator() {
               {[
                 { key: 'cogs', label: t('inputs.cogs'), tooltip: t('tooltips.cogs') },
                 { key: 'shipping', label: t('inputs.shipping'), tooltip: t('tooltips.shipping') },
-                { key: 'transactionFees', label: 'Tx Fees', tooltip: t('tooltips.transactionFees') },
+                { key: 'transactionFees', label: t('inputs.transactionFees'), tooltip: t('tooltips.transactionFees') },
                 { key: 'packaging', label: t('inputs.packaging'), tooltip: t('tooltips.packaging') },
+                { key: 'otherVariable', label: t('inputs.otherVariable') || 'Other Var.', tooltip: 'Any other per-order variable costs.' },
               ].map((item) => (
                 <div key={item.key} className="bg-white border border-slate-200 rounded-xl p-3 shadow-xs transition-all">
                   <div className="flex justify-between mb-1">
@@ -180,6 +199,7 @@ export default function Calculator() {
                     value={inputs[item.key as keyof Inputs] as number}
                     onChange={(v) => updateInput(item.key as keyof Inputs, v)}
                     prefix={currencySymbol}
+                    placeholder="00"
                   />
                 </div>
               ))}
@@ -197,6 +217,7 @@ export default function Calculator() {
                 value={inputs.fixedCosts}
                 onChange={(v) => updateInput('fixedCosts', v)}
                 prefix={currencySymbol}
+                placeholder="00"
               />
             </div>
           </section>
@@ -220,6 +241,7 @@ export default function Calculator() {
                   value={inputs.adSpend}
                   onChange={(v) => updateInput('adSpend', v)}
                   prefix={currencySymbol}
+                  placeholder="00"
                 />
               </div>
               <div className="flex gap-4">
@@ -236,6 +258,7 @@ export default function Calculator() {
                   onChange={(v) => updateInput('actualROAS', v)}
                   precision={2}
                   suffix="x"
+                  placeholder="00"
                 />
               </div>
               <div className="flex-1">
@@ -251,6 +274,7 @@ export default function Calculator() {
                   onChange={(v) => updateInput('targetMargin', v)}
                   precision={1}
                   suffix="%"
+                  placeholder="00"
                 />
               </div>
               </div>
@@ -270,19 +294,18 @@ export default function Calculator() {
                 </Tooltip>
               </div>
               <div className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                {results.breakevenROAS === Infinity ? 'N/A' : results.breakevenROAS.toFixed(2)}
-                <span className="text-lg ml-1 text-slate-400 font-medium whitespace-nowrap">x</span>
+                {formatNumber(results.breakevenROAS, 2, 'x')}
               </div>
               <div className="mt-4 flex items-center gap-2">
                 <div className="h-1 flex-1 bg-slate-100 rounded-full overflow-hidden">
                   <motion.div 
                     initial={{ width: 0 }}
-                    animate={{ width: `${Math.min(100, (inputs.actualROAS / results.breakevenROAS) * 50)}%` }}
-                    className={`h-full transition-all duration-500 ${results.breakevenROAS < inputs.actualROAS ? 'bg-emerald-500' : 'bg-red-400'}`}
+                    animate={{ width: `${Math.min(100, ((inputs.actualROAS || 0) / (results.breakevenROAS || 1)) * 50)}%` }}
+                    className={`h-full transition-all duration-500 ${results.breakevenROAS < (inputs.actualROAS || 0) ? 'bg-emerald-500' : 'bg-red-400'}`}
                   ></motion.div>
                 </div>
-                <span className={`text-[10px] font-bold uppercase ${results.breakevenROAS < inputs.actualROAS ? 'text-emerald-600' : 'text-red-500'}`}>
-                  {results.breakevenROAS < inputs.actualROAS ? 'Healthy' : 'Warning'}
+                <span className={`text-[10px] font-bold uppercase ${results.breakevenROAS < (inputs.actualROAS || 0) ? 'text-emerald-600' : 'text-red-500'}`}>
+                  {results.breakevenROAS < (inputs.actualROAS || 0) ? 'Healthy' : 'Warning'}
                 </span>
               </div>
             </div>
@@ -295,8 +318,7 @@ export default function Calculator() {
                 </Tooltip>
               </div>
               <div className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                {results.marginPercent.toFixed(1)}
-                <span className="text-lg ml-1 text-slate-400 font-medium">%</span>
+                {formatNumber(results.marginPercent, 1, '%')}
               </div>
               <div className="mt-4 text-xs font-bold text-slate-400 uppercase">
                 {formatCurrency(results.grossProfitPerOrder)} {t('results.profitPerOrder')}
@@ -305,17 +327,16 @@ export default function Calculator() {
 
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('results.rogp')} Efficiency</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('results.rogp')}</span>
                 <Tooltip title={t('tooltips.rogp')}>
                   <div className="w-4 h-4 rounded-full border border-slate-200 text-[10px] flex items-center justify-center text-slate-400 cursor-help hover:border-indigo-400 hover:text-indigo-600 transition-all duration-200">?</div>
                 </Tooltip>
               </div>
               <div className="text-4xl font-extrabold text-indigo-600 tracking-tight">
-                {results.rogp.toFixed(2)}
-                <span className="text-lg ml-1 text-indigo-300 font-medium">x</span>
+                {formatNumber(results.rogp, 2, 'x')}
               </div>
               <div className="mt-4 text-xs font-bold text-indigo-400 uppercase">
-                Return on Gross Profit
+                {t('results.rogp')}
               </div>
             </div>
           </div>
@@ -350,7 +371,9 @@ export default function Calculator() {
                       <div className="w-4 h-4 rounded-full border border-slate-700 text-[10px] flex items-center justify-center text-slate-500 cursor-help hover:border-indigo-400 hover:text-indigo-400 transition-all duration-200">?</div>
                     </Tooltip>
                   </div>
-                  <span className="text-sm font-bold text-slate-200">{results.breakevenUnits} {t('results.profitPerOrder').includes('单') ? '单' : 'Units'}</span>
+                  <span className="text-sm font-bold text-slate-200">
+                    {results.breakevenUnits !== null ? `${results.breakevenUnits} ${t('results.unit')}` : '-'}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-b border-slate-800">
                   <div className="flex items-center gap-2">
@@ -392,7 +415,7 @@ export default function Calculator() {
                       </div>
                     )}
                   </div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{t('inputs.fixedCosts').split(' ')[0]}</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{t('inputs.fixedCosts')}</span>
                 </div>
 
                 {/* Ad Spend Bar */}
@@ -413,7 +436,7 @@ export default function Calculator() {
                       </div>
                     )}
                   </div>
-                  <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-tight">{t('inputs.adSpend').split(' ')[0]}</span>
+                  <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-tight">{t('inputs.adSpend')}</span>
                 </div>
 
                 {/* Net Profit Bar */}
@@ -434,13 +457,13 @@ export default function Calculator() {
                       </div>
                     )}
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-tight">{t('results.netProfit').split(' ')[0]}</span>
+                  <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-tight">{t('results.netProfit')}</span>
                 </div>
               </div>
               <div className="flex flex-wrap gap-4 pt-6 border-t border-slate-100">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-slate-200"></div>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('inputs.fixedCosts').split(' ')[0]}</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{t('inputs.fixedCosts')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-indigo-500/80"></div>
@@ -456,48 +479,11 @@ export default function Calculator() {
         </div>
       </div>
 
-      {/* Formula Transparency Section */}
-      <section className="mt-12 bg-slate-900 text-white rounded-2xl p-8 shadow-xl border border-slate-800">
-        <h3 className="text-sm font-bold uppercase tracking-widest text-slate-500 mb-8">{t('results.summary')} - Technical Logic</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">Breakeven ROAS</h4>
-              <Tooltip title={t('tooltips.breakevenROAS')}>
-                <div className="w-4 h-4 rounded-full border border-slate-700 text-[10px] flex items-center justify-center text-slate-500 cursor-help hover:border-indigo-400 hover:text-indigo-400 transition-all duration-200">?</div>
-              </Tooltip>
-            </div>
-            <div className="bg-slate-800 p-4 rounded-xl text-xs font-mono text-slate-300 border border-slate-700">
-              AOV / (AOV - Total Variable Costs)
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed">{t('formulas.breakevenROAS')}</p>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">Contribution Margin</h4>
-              <Tooltip title={t('tooltips.contributionMargin')}>
-                <div className="w-4 h-4 rounded-full border border-slate-700 text-[10px] flex items-center justify-center text-slate-500 cursor-help hover:border-indigo-400 hover:text-indigo-400 transition-all duration-200">?</div>
-              </Tooltip>
-            </div>
-            <div className="bg-slate-800 p-4 rounded-xl text-xs font-mono text-slate-300 border border-slate-700">
-              Gross Profit / Total Revenue
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed">{t('formulas.contributionMargin')}</p>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="text-[10px] font-bold uppercase tracking-widest text-indigo-400">Return on Gross Profit</h4>
-              <Tooltip title={t('tooltips.rogp')}>
-                <div className="w-4 h-4 rounded-full border border-slate-700 text-[10px] flex items-center justify-center text-slate-500 cursor-help hover:border-indigo-400 hover:text-indigo-400 transition-all duration-200">?</div>
-              </Tooltip>
-            </div>
-            <div className="bg-slate-800 p-4 rounded-xl text-xs font-mono text-slate-300 border border-slate-700">
-              Total Gross Profit / Ad Spend
-            </div>
-            <p className="text-xs text-slate-400 leading-relaxed">{t('formulas.rogp')}</p>
-          </div>
-        </div>
-      </section>
+      <InterpretationSection 
+        interpretations={results.interpretations} 
+        bottomLine={results.bottomLine} 
+      />
+
     </div>
   );
 }
